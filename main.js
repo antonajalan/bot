@@ -8,7 +8,26 @@ import makeWASocket, {
     fetchLatestBaileysVersion
 } from "@whiskeysockets/baileys";
 
+import { promisify } from "node:util";
+import { execFile } from "node:child_process";
+
 const bot_number="6283173655769";
+
+async function tiktok(url) {
+    const { stdout } = await promisify(execFile)("curl", [
+        "-sS",
+        "-L",
+        "--compressed",
+        "https://tikwm.com/api/",
+        "-X", "POST",
+        "-H", "Content-Type: application/x-www-form-urlencoded",
+        "--data-raw", new URLSearchParams({ url, hd: "1" }).toString()
+    ], { encoding: "utf8", maxBuffer: 50 * 1024 * 1024 });
+
+    const { data } = JSON.parse(stdout);
+
+    return data;
+}
 
 async function start() {
     try {
@@ -66,15 +85,14 @@ async function start() {
 
                 for (const [url] of m.body.matchAll(/https?:\/\/(?:vt|vm|www)?\.?tiktok\.com\/[^\s]+/gi)) {
                     try {
-                        const { data } = await got.get(`https://www.tikwm.com/api/url?=${url}`).json();
+                        const data = await tiktok(url);
 
                         if (Array.isArray(data?.images) && data.images.length) {
                             for (const image of data.images) {
                                 await socket.sendMessage(m.key.remoteJid, {
                                     image: {
                                         url: image
-                                    },
-                                    mimeType: "video/mp4"
+                                    }
                                 }, { quoted: m });
                             }
                             continue;
@@ -90,11 +108,15 @@ async function start() {
                                 mimeType: "video/mp4"
                             }, { quoted: m });
                         }
-                    } catch { }
+                    } catch (e) {
+                        console.log(e.message);
+                    }
                 }
             }
         });
-    } catch { }
+    } catch (e) {
+        console.log(e.message);
+    }
 }
 
 start();
