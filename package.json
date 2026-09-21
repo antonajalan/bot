@@ -1,0 +1,11 @@
+{
+  "name": "botwa",
+  "version": "1.0.0",
+  "main": "main.js",
+  "type": "module",
+  "dependencies": {
+    "@whiskeysockets/baileys": "latest",
+    "pino": "latest",
+    "got": "latest"
+  }
+}
