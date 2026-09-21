@@ -8,23 +8,18 @@ import makeWASocket, {
     fetchLatestBaileysVersion
 } from "@whiskeysockets/baileys";
 
-import { promisify } from "node:util";
-import { execFile } from "node:child_process";
-
 const bot_number="6283173655769";
 
 async function tiktok(url) {
-    const { stdout } = await promisify(execFile)("curl", [
-        "-sS",
-        "-L",
-        "--compressed",
-        "https://tikwm.com/api/",
-        "-X", "POST",
-        "-H", "Content-Type: application/x-www-form-urlencoded",
-        "--data-raw", new URLSearchParams({ url, hd: "1" }).toString()
-    ], { encoding: "utf8", maxBuffer: 50 * 1024 * 1024 });
+    const response = await got.post("https://www.tikwm.com/api/", {
+        form: {
+            url,
+            hd: 1
+        },
+        responseType: "json"
+    });
 
-    const { data } = JSON.parse(stdout);
+    const { data } = response.body;
 
     return data;
 }
