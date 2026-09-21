@@ -40,7 +40,7 @@ async function start() {
         socket.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
             if (connection === "close") {
                 const disconnectCode = lastDisconnect?.error?.output?.statusCode;
-                const shouldReconnect = disconnectCode !== DisconnectReason.loggedOut;q
+                const shouldReconnect = disconnectCode !== DisconnectReason.loggedOut;
 
                 if (shouldReconnect) {
                     setTimeout(() => {
