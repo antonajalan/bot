@@ -10,20 +10,6 @@ import makeWASocket, {
 
 const bot_number="6283122054460";
 
-async function tiktok(url) {
-    const response = await got.post("https://www.tikwm.com/api/", {
-        form: {
-            url,
-            hd: 1
-        },
-        responseType: "json"
-    });
-
-    const { data } = response.body;
-
-    return data;
-}
-
 async function start() {
     try {
         const { state, saveCreds } = await useMultiFileAuthState("./tmp");
@@ -80,7 +66,8 @@ async function start() {
 
                 for (const [url] of m.body.matchAll(/https?:\/\/(?:vt|vm|www)?\.?tiktok\.com\/[^\s]+/gi)) {
                     try {
-                        const data = await tiktok(url);
+                        const response = await got(`https://www.tikwm.com/api/?url=${url}&hd=1`).json();
+                        const data = response.data;
 
                         if (Array.isArray(data?.images) && data.images.length) {
                             for (const image of data.images) {
