@@ -8,7 +8,7 @@ import makeWASocket, {
     fetchLatestBaileysVersion
 } from "@whiskeysockets/baileys";
 
-const bot_number="6283173655769";
+const bot_number="6283122054460";
 
 async function tiktok(url) {
     const response = await got.post("https://www.tikwm.com/api/", {
